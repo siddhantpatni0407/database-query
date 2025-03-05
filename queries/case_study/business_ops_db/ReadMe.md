@@ -72,94 +72,38 @@ erDiagram
     customers ||--|{ user_logins : "has"
 ```
 
-## SQL Queries
+## SQL Questions
 
-### **Medium Level Queries**
-1. Find the second highest salary in an employee table.
-```sql
-SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 1 OFFSET 1;
-```
+Medium Level:
 
-2. Fetch all employees whose names contain the letter "a" exactly twice.
-```sql
-SELECT * FROM employees WHERE name ~* '^([^a]*a[^a]*){2}[^a]*$';
-```
+1 Write a query to find the second highest salary in an employee table.
+2 Fetch all employees whose names contain the letter "a" exactly twice.
+3 How do you retrieve only duplicate records from a table?
+4 Write a query to calculate the running total of sales by date.
+5 Find employees who earn more than the average salary in their department.
+6 Write a query to find the most frequently occurring value in a column.
+7 Fetch records where the date is within the last 7 days from today.
+8 Write a query to count how many employees share the same salary.
+9 How do you fetch the top 3 records for each group in a table?
+10 Retrieve products that were never sold (hint: use LEFT JOIN).
 
-3. Retrieve only duplicate records from a table.
-```sql
-SELECT name, COUNT(*) FROM employees GROUP BY name HAVING COUNT(*) > 1;
-```
+Challenging Level:
 
-4. Calculate the running total of sales by date.
-```sql
-SELECT sale_date, sale_amount, SUM(sale_amount) OVER (ORDER BY sale_date) AS running_total FROM sales;
-```
+1 Retrieve customers who made their first purchase in the last 6 months.
+2 How do you pivot a table to convert rows into columns?
+3 Write a query to calculate the percentage change in sales month-over-month.
+4 Find the median salary of employees in a table.
+5 Fetch all users who logged in consecutively for 3 days or more.
+6 Write a query to delete duplicate rows while keeping one occurrence.
+7 Create a query to calculate the ratio of sales between two categories.
+8 How would you implement a recursive query to generate a hierarchical structure?
+9 Write a query to find gaps in sequential numbering within a table.
+10 Split a comma-separated string into individual rows using SQL.
 
-5. Find employees who earn more than the average salary in their department.
-```sql
-SELECT e.* FROM employees e
-JOIN (
-    SELECT department_id, AVG(salary) AS avg_salary
-    FROM employees GROUP BY department_id
-) dept_avg ON e.department_id = dept_avg.department_id
-WHERE e.salary > dept_avg.avg_salary;
-```
+Advanced Problem-Solving:
 
-### **Challenging Queries**
-1. Retrieve customers who made their first purchase in the last 6 months.
-```sql
-SELECT c.* FROM customers c
-JOIN orders o ON c.customer_id = o.customer_id
-WHERE o.order_date >= CURRENT_DATE - INTERVAL '6 months'
-ORDER BY o.order_date ASC;
-```
-
-2. Calculate the percentage change in sales month-over-month.
-```sql
-SELECT sale_date, sale_amount,
-  (sale_amount - LAG(sale_amount) OVER (ORDER BY sale_date)) / LAG(sale_amount) OVER (ORDER BY sale_date) * 100 AS percent_change
-FROM sales;
-```
-
-3. Fetch all users who logged in consecutively for 3 days or more.
-```sql
-SELECT user_id FROM (
-    SELECT user_id, login_date,
-           LEAD(login_date, 1) OVER (PARTITION BY user_id ORDER BY login_date) AS next_login,
-           LEAD(login_date, 2) OVER (PARTITION BY user_id ORDER BY login_date) AS third_login
-    FROM user_logins
-) consecutive
-WHERE next_login = login_date + INTERVAL '1 day'
-AND third_login = login_date + INTERVAL '2 days';
-```
-
-### **Advanced Queries**
-1. Fetch all employees whose salaries fall within the top 10% of their department.
-```sql
-SELECT * FROM employees e
-WHERE salary >= (
-    SELECT PERCENTILE_CONT(0.9) WITHIN GROUP (ORDER BY salary) FROM employees e2
-    WHERE e.department_id = e2.department_id
-);
-```
-
-2. Identify orders placed during business hours (9 AM to 6 PM).
-```sql
-SELECT * FROM orders WHERE EXTRACT(HOUR FROM order_date) BETWEEN 9 AND 18;
-```
-
-3. Retrieve customers who made purchases across at least three different categories.
-```sql
-SELECT c.customer_id, c.name FROM customers c
-JOIN orders o ON c.customer_id = o.customer_id
-JOIN order_items oi ON o.order_id = oi.order_id
-JOIN products p ON oi.product_id = p.product_id
-GROUP BY c.customer_id, c.name
-HAVING COUNT(DISTINCT p.category) >= 3;
-```
-
----
-## Conclusion
-This document serves as a reference for database design, entity relationships, and common SQL queries. It covers employee management, sales tracking, product orders, and customer interactions.
-
-Let me know if you need any modifications or additional queries! 🚀
+1 Rank products by sales in descending order for each region.
+2 Fetch all employees whose salaries fall within the top 10% of their department.
+3 Identify orders placed during business hours (e.g., 9 AM to 6 PM).
+4 Write a query to get the count of users active on both weekdays and weekends.
+5 Retrieve customers who made purchases across at least three different categories
